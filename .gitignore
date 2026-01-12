@@ -1,0 +1,21 @@
+#python 
+__pycache__/
+*.pyc
+
+#logs 
+*.log
+logs/
+
+#environmant 
+.env
+
+#macOs/os
+.DS_Store
+.Thumbs.db
+
+#vs code
+.vscode/
+
+# temp .swap 
+*.swap
+*..tmp 
