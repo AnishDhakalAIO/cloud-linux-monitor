@@ -1,46 +1,38 @@
-import logging #python built-in module for logging message 
-import os  # os modules to handle folder creation and file path 
+import logging
+import os
+
+def trim_log_file(log_file, max_lines=5):
+    """Keep only the last `max_lines` entries in the log file."""
+    if os.path.exists(log_file):
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+        if len(lines) > max_lines:
+            lines = lines[-max_lines:]  # keep last max_lines
+            with open(log_file, "w") as f:
+                f.writelines(lines)
 
 def get_logger():
-    """
-    Returns a configured logger object for cloud monitoring project.
-    This will write logs to a central file with format in local system but its 
-    ignored by .gitignore which will help use to make our project lite
-    along with information that we can use in case of program error.
-    """
+    """Logger that keeps last 5 entries."""
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
 
-    #step 1 : Define logs folder 
-    log_dir = "logs" # Folder where files will be stored 
-    os.makedirs(log_dir, exist_ok=True) #create folder if it doesn't exist ( but we already have)
-    
-    #Define log file path 
-    # full path to log file: this format is compatanle acros mac,windows,linux
-    log_file = os.path.join(log_dir,"monitor.log")
+    log_file = os.path.join(log_dir, "monitor.log")
 
-    #here we create logger object
-    logger = logging.getLogger("cloud-moinitor")
-    #named logger so all modules share the same name 
-    logger.setLevel(logging.DEBUG)
-    #logging lever , whe have 4 differnet types this is basic one. [ debug ]
+    # Trim old entries first
+    trim_log_file(log_file, max_lines=5)
 
-    if logger.handlers: # avoide duplicate 
+    logger = logging.getLogger("cloud-monitor")
+    logger.setLevel(logging.INFO)
+
+    if logger.handlers:
         return logger
-    
-    # creating file hander 
-    # file handler writes logs to the specified log file 
-    file_handler = logging.FileHandler(log_file)
 
-    #defining log format 
-    formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(message)s"
-    )
-    # with timestamp--- log level -- actual message 
+    # Append mode so new logs are added
+    file_handler = logging.FileHandler(log_file, mode="a")
 
-    #connect format to file handler 
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
 
-    # return the ready to use logger 
     logger.addHandler(file_handler)
 
-    #return the ready to use logger 
     return logger
