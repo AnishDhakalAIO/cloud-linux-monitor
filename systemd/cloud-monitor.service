@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloud Linux Monitor Service
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/cloud-linux-monitor
+ExecStart=/home/ubuntu/cloud-linux-monitor/venv/bin/python3 -m src.main
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+
