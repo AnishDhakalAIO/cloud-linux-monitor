@@ -18,4 +18,6 @@ logs/
 
 # temp .swap 
 *.swap
-*..tmp 
+*..tmp
+
+venv/ 
